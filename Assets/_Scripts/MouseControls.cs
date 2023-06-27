@@ -62,15 +62,6 @@ public partial class @MouseControls: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": true
-                },
-                {
-                    ""name"": ""Pan"",
-                    ""type"": ""Button"",
-                    ""id"": ""e4e9a085-4dcc-47e5-bb15-3ae336622de8"",
-                    ""expectedControlType"": ""Button"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
                 }
             ],
             ""bindings"": [
@@ -117,17 +108,6 @@ public partial class @MouseControls: IInputActionCollection2, IDisposable
                     ""action"": ""Zoom"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""d14bd0d9-563c-446d-b4b0-384be19fb81f"",
-                    ""path"": """",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": """",
-                    ""action"": ""Pan"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -140,7 +120,6 @@ public partial class @MouseControls: IInputActionCollection2, IDisposable
         m_Mouse_ClickPosition = m_Mouse.FindAction("ClickPosition", throwIfNotFound: true);
         m_Mouse_Erase = m_Mouse.FindAction("Erase", throwIfNotFound: true);
         m_Mouse_Zoom = m_Mouse.FindAction("Zoom", throwIfNotFound: true);
-        m_Mouse_Pan = m_Mouse.FindAction("Pan", throwIfNotFound: true);
     }
 
     public void Dispose()
@@ -206,7 +185,6 @@ public partial class @MouseControls: IInputActionCollection2, IDisposable
     private readonly InputAction m_Mouse_ClickPosition;
     private readonly InputAction m_Mouse_Erase;
     private readonly InputAction m_Mouse_Zoom;
-    private readonly InputAction m_Mouse_Pan;
     public struct MouseActions
     {
         private @MouseControls m_Wrapper;
@@ -215,7 +193,6 @@ public partial class @MouseControls: IInputActionCollection2, IDisposable
         public InputAction @ClickPosition => m_Wrapper.m_Mouse_ClickPosition;
         public InputAction @Erase => m_Wrapper.m_Mouse_Erase;
         public InputAction @Zoom => m_Wrapper.m_Mouse_Zoom;
-        public InputAction @Pan => m_Wrapper.m_Mouse_Pan;
         public InputActionMap Get() { return m_Wrapper.m_Mouse; }
         public void Enable() { Get().Enable(); }
         public void Disable() { Get().Disable(); }
@@ -237,9 +214,6 @@ public partial class @MouseControls: IInputActionCollection2, IDisposable
             @Zoom.started += instance.OnZoom;
             @Zoom.performed += instance.OnZoom;
             @Zoom.canceled += instance.OnZoom;
-            @Pan.started += instance.OnPan;
-            @Pan.performed += instance.OnPan;
-            @Pan.canceled += instance.OnPan;
         }
 
         private void UnregisterCallbacks(IMouseActions instance)
@@ -256,9 +230,6 @@ public partial class @MouseControls: IInputActionCollection2, IDisposable
             @Zoom.started -= instance.OnZoom;
             @Zoom.performed -= instance.OnZoom;
             @Zoom.canceled -= instance.OnZoom;
-            @Pan.started -= instance.OnPan;
-            @Pan.performed -= instance.OnPan;
-            @Pan.canceled -= instance.OnPan;
         }
 
         public void RemoveCallbacks(IMouseActions instance)
@@ -282,6 +253,5 @@ public partial class @MouseControls: IInputActionCollection2, IDisposable
         void OnClickPosition(InputAction.CallbackContext context);
         void OnErase(InputAction.CallbackContext context);
         void OnZoom(InputAction.CallbackContext context);
-        void OnPan(InputAction.CallbackContext context);
     }
 }

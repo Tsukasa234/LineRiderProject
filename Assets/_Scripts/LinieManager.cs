@@ -10,6 +10,8 @@ public class LinieManager : MonoBehaviour
     //Region para variables privadas
     #region Private
 
+    //referencia al player
+    [SerializeField] private Player player;
     //Esta lista guardara todas las lineas que se hayan creado
     private List<GameObject> lines;
     //Esta lista guardara las posiciones de todas las lineas
@@ -19,6 +21,7 @@ public class LinieManager : MonoBehaviour
     //Esta variable es para agregar collision a las lineas
     private EdgeCollider2D currentLineEdgeCollider;
 
+    //Referencia al "Physics Material 2D" que ira a la linea
     [SerializeField] private PhysicsMaterial2D physicsMaterial2D;
 
 
@@ -29,9 +32,16 @@ public class LinieManager : MonoBehaviour
     //Obtener una referencia a la camara principal
     private Camera mainCamera;
 
+    //Referencia al Componente de "Pan"
+    private Pan panning;
+
+    //Referencia al objeto de Zoom
+    private Zoom zooming;
+
     //Referencia al inputmanager
     private InputManager inputManager;
 
+    //Esta variable sera la linea que se creara
     private GameObject currentLineObject;
 
     //Settings
@@ -46,6 +56,9 @@ public class LinieManager : MonoBehaviour
 
     //NT- estas variables son para configurar los parametros del linerenderer
 
+    //Esta variable controla la velocidad del "SurfaceEffector"
+    [SerializeField] private float effectorSpeed = 3f;
+
     #endregion
 
 
@@ -55,6 +68,9 @@ public class LinieManager : MonoBehaviour
         inputManager = GetComponent<InputManager>();
         //Asiganacion de la camara principal a nuestra variable
         mainCamera = Camera.main;
+        //Obtenemos el componente de Pan y Zoom
+        panning = GetComponent<Pan>();
+        zooming = GetComponent<Zoom>();
     }
 
     void OnEnable()
@@ -76,6 +92,23 @@ public class LinieManager : MonoBehaviour
         inputManager.OnEndErase -= OnEndErase;
     }
 
+    //En el update vemos desde el player si se esta jugnado o no
+    void Update()
+    {
+        if (!player.playing)
+        {
+            //Si no se esta jugando ejecutamos el pan y el zoom
+            panning.PanScreen(GetCurrentScreenPoint());
+            zooming.ZoomScreen(GetZoomValue());
+        }
+    }
+
+    //Con este metodo obtenemos el valor del scroll del mouse
+    private float GetZoomValue()
+    {
+        return inputManager.GetZoom();
+    }
+
     //Metodo para iniciar a dibujar
     public void OnStartDraw()
     {
@@ -94,14 +127,17 @@ public class LinieManager : MonoBehaviour
     //Metodo para cuando se inicie ha borrar
     public void OnStartErase()
     {
+        //Vemos que no se este dibujando
         if (!drawing)
         {
+            //Iniciamos la coroutina
             StartCoroutine("Erasing");
         }
     }
     //Metodo para cuando se termine de borrar
     public void OnEndErase()
     {
+        //Al finalizar borrar seteamos la variable "erasing" en false
         erasing = false;
     }
 
@@ -109,15 +145,22 @@ public class LinieManager : MonoBehaviour
 
     IEnumerator Erasing()
     {
+        //Seteamos la variable "erasing" ha true
         erasing = true;
+        //Mientras sea true entramos en un while
         while (erasing)
         {
+            //obtenemos la posicion del mouse en Pantalla
             Vector2 screenMousePosition = GetCurrentScreenPoint();
+            //creamos un GameObject que se recibira desde el script "De utils" que recibe la camara, la posicion del mouse y del layer
             GameObject g = Utils.Raycast(mainCamera, screenMousePosition, 1<<8);
+            //hacemos comprobaciones
             if (g != null)
             {
+                //Destruimos la linea que se ha recibido
                 DestroyLine(g);
             }
+            //Retornamos el yield return null
             yield return null;
         }
     }
@@ -172,7 +215,14 @@ public class LinieManager : MonoBehaviour
         lineRenderer = currentLineObject.AddComponent<LineRenderer>();
         //Asignamos a la variable del "Edgecollider" el objeto creado añadiendole el componente de "EdgeCollider2D"
         currentLineEdgeCollider = currentLineObject.AddComponent<EdgeCollider2D>();
+        //Aqui asigamos un "PhysicMaterial" a la linea
         currentLineEdgeCollider.sharedMaterial = physicsMaterial2D;
+        //Aqui decimos que se usara un effector
+        currentLineEdgeCollider.usedByEffector = true;
+        //Aqui añadimos el componente de "SurfaceEffector2D"
+        SurfaceEffector2D currentEffector = currentLineObject.AddComponent<SurfaceEffector2D>();
+        //Seteamos la velocidad del Effector
+        currentEffector.speed = effectorSpeed;
 
         //Start Set Settings
 
@@ -190,8 +240,8 @@ public class LinieManager : MonoBehaviour
         lineRenderer.startColor = lineColor;
         lineRenderer.endColor = lineColor;
         //Ahora setearemos cuanto grosor tendra nuestro collider
-        currentLineEdgeCollider.edgeRadius = .1f;
-
+        currentLineEdgeCollider.edgeRadius = .25f;
+        //Aqui le decimos a la linea la posicion del layer en la que estara asiganada
         currentLineObject.layer = 1<<3;
     }
 
@@ -213,8 +263,10 @@ public class LinieManager : MonoBehaviour
     //Final de la linea
     private void EndLine()
     {
+        //Vemos que si la linea es la 1
         if (currentLine.Count == 1)
         {
+            //Destruimos la linea actual
             DestroyLine(currentLineObject);
         }
         else

@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 519420032}
   - component: {fileID: 519420031}
   - component: {fileID: 519420029}
+  - component: {fileID: 519420030}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -149,6 +150,21 @@ AudioListener:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 519420028}
   m_Enabled: 1
+--- !u!114 &519420030
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 519420028}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c093cdf2de6d3db4bb5c4a8ae81f7fc6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 1991506504}
+  offset: {x: 0, y: 0, z: -1.5}
+  smoothSpeed: 0.125
 --- !u!20 &519420031
 Camera:
   m_ObjectHideFlags: 0
@@ -217,6 +233,8 @@ GameObject:
   - component: {fileID: 742490027}
   - component: {fileID: 742490026}
   - component: {fileID: 742490025}
+  - component: {fileID: 742490028}
+  - component: {fileID: 742490029}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -236,11 +254,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e76115e1a992deb41bbd751283bb952c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 1991506505}
   physicsMaterial2D: {fileID: 6200000, guid: 4b4ba9dfbb606aa418abc72d8243f8e2, type: 2}
   lineSeparationDistance: 0.3
   lineWidth: 0.1
   lineColor: {r: 0, g: 0, b: 0, a: 1}
   lineVertices: 5
+  effectorSpeed: 3
 --- !u!114 &742490026
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -267,6 +287,34 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &742490028
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742490024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5739525a44ea9754d91e7bc5eb2f8232, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  panSpeed: 6
+--- !u!114 &742490029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 742490024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8b67a2edb53477b40a984b52ddec1a87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  zoomSpeed: 4
+  zoomInMax: 1
+  zoomOutMax: 15
 --- !u!1 &1991506500
 GameObject:
   m_ObjectHideFlags: 0
